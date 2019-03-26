@@ -1,0 +1,42 @@
+#!python3
+import argparse
+import json
+import paramiko
+from servicedesc.Redmine import Redmine
+from servicedesc.RevProxy import RevProxy
+from servicedesc.DockerTools import DockerTools
+from servicedesc.Matcher import Matcher
+
+
+parser = argparse.ArgumentParser()
+parser.add_argument('--revProxyHost', default='acdh.oeaw.ac.at')
+parser.add_argument('--sshUser', default='mzoltak')
+parser.add_argument('--hosts', nargs='*', default=['apollo', 'minerva', 'hephaistos', 'herkules', 'sisyphos'])
+parser.add_argument('--redmineTrackerId', default=7, type=int)
+parser.add_argument('--redmineUrl', default='https://redmine.acdh.oeaw.ac.at/')
+parser.add_argument('--redmineUser', default='mzoltak')
+parser.add_argument('redminePswd')
+args = parser.parse_args()
+
+# 1. Collect information on services from different sources
+
+#rdmn = Redmine(args.redmineUrl, args.redmineUser, args.redminePswd)
+#rdmn.addFilter('tracker_id', args.redmineTrackerId)
+#rdmnSrvcs = rdmn.fetch()
+
+#prx = RevProxy(args.revProxyHost, args.sshUser)
+#prxSrvcs = prx.fetch()
+
+#dckrtls = DockerTools(args.hosts, args.sshUser)
+#dckrtolsSrvcs = dckrtls.fetch()
+
+#services = {'redmine': rdmnSrvcs, 'proxy': prxSrvcs, 'dockerTools': dckrtolsSrvcs}
+
+with open('cache.json') as i:
+    x = json.load(i)
+
+# 2. Match services between sources
+
+matcher = Matcher()
+services = matcher.match(x)
+
